@@ -1,0 +1,66 @@
+{
+  "tipo": "snapshot_sintetico_para_estudo_sql",
+  "repositorio_origem": "https://github.com/Pedroferreira32/pandas-support-analytics-case",
+  "commit_origem": "7d864578c3a30ecf36078e64613d69e0728f2d93",
+  "data_preparacao": "2026-11-01",
+  "sql_extraido_integralmente": "https://github.com/Pedroferreira32/pandas-support-analytics-case/blob/7d864578c3a30ecf36078e64613d69e0728f2d93/sql/reconciliar.sql",
+  "sha256_sql_original": "793f3f12be4b92558fbb57a549d109e61bb7dbada027b53687daff3d920f6703",
+  "seed_sha256": "40f927425961e9bd5603e60a3e03ef8b5e6aeb8f354c67d2452abd3eb3ba494c",
+  "competencias": {
+    "2026-08": {
+      "total_extraido": 18,
+      "validos": 10,
+      "excluidos": 8,
+      "avaliacoes": 9,
+      "deslocamento_dias": 0,
+      "protocolos_base_dos_adicionais": []
+    },
+    "2026-09": {
+      "total_extraido": 22,
+      "validos": 14,
+      "excluidos": 8,
+      "avaliacoes": 13,
+      "deslocamento_dias": 28,
+      "protocolos_base_dos_adicionais": [
+        "V001",
+        "V002",
+        "V005",
+        "V008"
+      ]
+    },
+    "2026-10": {
+      "total_extraido": 20,
+      "validos": 12,
+      "excluidos": 8,
+      "avaliacoes": 11,
+      "deslocamento_dias": 56,
+      "protocolos_base_dos_adicionais": [
+        "V005",
+        "V008"
+      ]
+    }
+  },
+  "contagem_tabelas": {
+    "competencias": 3,
+    "execucoes": 3,
+    "etapas": 12,
+    "validos": 36,
+    "excluidos": 24,
+    "ranking": 9
+  },
+  "arquivos_de_origem": [
+    {
+      "path": "origens/2026-08.csv",
+      "sha256": "ddd2907a7dc5de54b4830ac98cede43d39978769551d697fb758095c80131891"
+    },
+    {
+      "path": "origens/2026-09.csv",
+      "sha256": "f74cb8eac4f15eba29a1a560049940778fc2631bfb6840c7c8409c549710588d"
+    },
+    {
+      "path": "origens/2026-10.csv",
+      "sha256": "98efd937f0aec15a1dc023f4c731b0611fceb510a5f7f25214bae684099de741"
+    }
+  ],
+  "nota": "Agosto conserva a amostra original. Setembro e outubro são cenários didáticos criados por deslocamento de 28 e 56 dias e inclusão de tickets com novos protocolos. Não são histórico real nem resultado observado de clientes."
+}

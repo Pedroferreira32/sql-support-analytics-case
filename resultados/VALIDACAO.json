@@ -1,0 +1,12 @@
+{
+  "estado": "aprovado",
+  "python": "3.12.14",
+  "sqlite": "3.53.1",
+  "competencias": 3,
+  "consultas_analiticas_executadas": 8,
+  "reconciliacoes_originais_aprovadas": 3,
+  "comparacoes_atendente_mes_aprovadas": 9,
+  "falha_controlada_detectada": true,
+  "mes_ausente_preservou_null": true,
+  "dados": "exclusivamente sintéticos"
+}
