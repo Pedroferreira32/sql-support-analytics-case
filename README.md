@@ -1,98 +1,102 @@
 # SQL Support Analytics
 
-Estudo reproduzível de análise e qualidade de dados com SQL e SQLite, derivado do projeto Performance do Suporte.
+**[English](README.md)** | [Português (Brasil)](README.pt-BR.md) | [Español](README.es.md) | [Italiano](README.it.md)
 
-Parti de um controle SQL que já reconciliava a carga do ETL e acrescentei consultas para responder perguntas sobre demanda, avaliações, evolução mensal e exclusões. Os cálculos analíticos estão nos arquivos SQL; um pequeno executor Python usa somente a biblioteca padrão para criar o banco e exportar os resultados.
+Reproducible SQL and SQLite case study in data analysis and data quality, derived from the Support Performance project.
 
-## O problema de negócio
+I started with an existing SQL control that reconciled ETL loading and added queries to answer questions about demand, ratings, monthly changes, and exclusions. Analytical calculations live in the SQL files; a small Python runner uses only the standard library to create the database and export results.
 
-Uma operação de suporte precisa saber quais registros entram nos indicadores, como o volume varia, quais clientes retornam e quanto da base recebeu avaliação. As consultas deste case permitem conferir essas perguntas e a consistência dos dados usados nas respostas.
+## Business problem
 
-## Como executar
+A support operation needs to know which records contribute to its indicators, how volume changes, which customers return, and how much of the dataset has received a rating. This case's queries let readers inspect those questions and the consistency of the data supporting the answers.
 
-Requisito: Python 3.12 ou superior. Não é necessário instalar pandas, um servidor de banco ou outras dependências.
+## How to run
 
-```bash
+Requirement: Python 3.12 or later. No pandas, database server, or other dependencies are required.
+
+~~~bash
 git clone https://github.com/Pedroferreira32/sql-support-analytics-case.git
 cd sql-support-analytics-case
 python executar.py
-```
+~~~
 
-O comando cria o banco em memória, executa todas as consultas, valida os resultados e grava os CSVs e o resumo na pasta resultados. Pode ser repetido com o mesmo comando.
+The command creates an in-memory database, runs all queries, validates results, and writes CSVs and a summary to `resultados`. It can be repeated with the same command.
 
-Para criar também um arquivo SQLite novo que possa ser aberto em um cliente de banco:
+To also create a new SQLite file that can be opened in a database client:
 
-```bash
+~~~bash
 python executar.py --database .gerado/suporte_demo.sqlite
-```
+~~~
 
-O executor recusa sobrescrever um arquivo de banco existente. Em uma nova execução com persistência, escolha outro caminho. As consultas também podem ser abertas diretamente em um cliente compatível com SQLite, após executar dados/criar_banco.sql em um banco vazio.
+The runner refuses to overwrite an existing database file. Choose another path for a subsequent persistent run. Queries can also be opened directly in a SQLite-compatible client after running `dados/criar_banco.sql` against an empty database.
 
-## Consultas e competências demonstradas
+## Queries and demonstrated skills
 
-| Pergunta ou controle | Arquivo | Recursos SQL |
+| Question or control | File | SQL features |
 |---|---|---|
-| A carga fechou sem perder ou duplicar registros? | [00_reconciliacao_original.sql](consultas/00_reconciliacao_original.sql) | CTEs, UNION ALL, LEFT JOIN, subconsultas e HAVING |
-| Qual é a visão geral de cada mês? | [01_visao_geral.sql](consultas/01_visao_geral.sql) | Agregações antes dos JOINs, COALESCE e NULLIF |
-| Como os indicadores se distribuem entre atendentes? | [02_indicadores_atendentes.sql](consultas/02_indicadores_atendentes.sql) | GROUP BY, AVG, COUNT, JOIN por competência e DENSE_RANK |
-| Quais clientes fizeram mais de um contato no mês? | [03_clientes_recorrentes.sql](consultas/03_clientes_recorrentes.sql) | CTEs, DISTINCT, JOIN e participação no total |
-| Como a demanda se distribui entre revendas? | [04_demanda_revendas.sql](consultas/04_demanda_revendas.sql) | Agrupamento, cobertura e SUM OVER PARTITION BY |
-| Como o volume mudou em relação ao mês anterior? | [05_evolucao_mensal.sql](consultas/05_evolucao_mensal.sql) | LAG, CASE e tratamento de lacunas |
-| Quais motivos concentram as exclusões? | [06_pareto_exclusoes.sql](consultas/06_pareto_exclusoes.sql) | Janela acumulada com ROWS e percentuais |
-| Os indicadores SQL conferem com o resultado pandas? | [07_validacao_indicadores.sql](consultas/07_validacao_indicadores.sql) | Contraprova por agregação, JOINs e tolerância numérica |
-| Qual arquivo e execução deram origem às contagens? | [08_rastreabilidade.sql](consultas/08_rastreabilidade.sql) | JOIN entre competências, execuções e etapas |
+| Did loading reconcile without losing or duplicating records? | [00_reconciliacao_original.sql](consultas/00_reconciliacao_original.sql) | CTEs, UNION ALL, LEFT JOIN, subqueries, and HAVING |
+| What is the overview for each month? | [01_visao_geral.sql](consultas/01_visao_geral.sql) | Aggregations before JOINs, COALESCE, and NULLIF |
+| How are indicators distributed across agents? | [02_indicadores_atendentes.sql](consultas/02_indicadores_atendentes.sql) | GROUP BY, AVG, COUNT, month-aware JOIN, and DENSE_RANK |
+| Which customers made more than one contact in a month? | [03_clientes_recorrentes.sql](consultas/03_clientes_recorrentes.sql) | CTEs, DISTINCT, JOIN, and share of total |
+| How is demand distributed across resellers? | [04_demanda_revendas.sql](consultas/04_demanda_revendas.sql) | Grouping, coverage, and SUM OVER PARTITION BY |
+| How did volume change from the previous month? | [05_evolucao_mensal.sql](consultas/05_evolucao_mensal.sql) | LAG, CASE, and gap handling |
+| Which reasons account for most exclusions? | [06_pareto_exclusoes.sql](consultas/06_pareto_exclusoes.sql) | Cumulative window with ROWS and percentages |
+| Do SQL indicators match the pandas result? | [07_validacao_indicadores.sql](consultas/07_validacao_indicadores.sql) | Independent aggregation checks, JOINs, and numeric tolerance |
+| Which file and execution produced the counts? | [08_rastreabilidade.sql](consultas/08_rastreabilidade.sql) | JOINs across reporting months, runs, and stages |
 
-## Origem dos dados
+## Data provenance
 
-A amostra é inteiramente fictícia. O banco foi produzido pela versão fixada do [ETL Python/pandas](https://github.com/Pedroferreira32/pandas-support-analytics-case/tree/7d864578c3a30ecf36078e64613d69e0728f2d93). O SQL de reconciliação foi copiado integralmente dessa versão; as oito consultas seguintes foram criadas para este estudo.
+The sample is entirely fictional. The database was produced by the pinned version of the [Python/pandas ETL](https://github.com/Pedroferreira32/pandas-support-analytics-case/tree/7d864578c3a30ecf36078e64613d69e0728f2d93). The reconciliation SQL was copied in full from that version; the following eight queries were created for this study.
 
-Agosto conserva os 18 registros da amostra original. Para exercitar a comparação entre meses, criei setembro e outubro deslocando as datas em quatro e oito semanas e acrescentando tickets fictícios com novos protocolos. A regra de deslocamento preserva os dias da semana. Esses meses são cenários didáticos, não histórico operacional real.
+August retains the 18 records from the original sample. To exercise monthly comparisons, I created September and October by shifting dates by four and eight weeks and adding fictional tickets with new identifiers. The shifting rule preserves weekdays. These months are educational scenarios, not real operational history.
 
-| Competência fictícia | Entrada | Válidos | Excluídos |
+| Fictional reporting month | Input | Valid | Excluded |
 |---|---:|---:|---:|
-| Agosto/2026 | 18 | 10 | 8 |
-| Setembro/2026 | 22 | 14 | 8 |
-| Outubro/2026 | 20 | 12 | 8 |
+| August 2026 | 18 | 10 | 8 |
+| September 2026 | 22 | 14 | 8 |
+| October 2026 | 20 | 12 | 8 |
 | Total | 60 | 36 | 24 |
 
-Os CSVs de origem estão em origens. O [manifesto](dados/manifesto_origem.json) identifica a versão do ETL, os hashes, a regra de geração e as contagens por tabela. O [SQL de criação do banco](dados/criar_banco.sql) torna a execução independente da instalação do projeto original.
+Source CSVs are in `origens`. The [manifest](dados/manifesto_origem.json) identifies the ETL version, hashes, generation rule, and per-table counts. The [database creation SQL](dados/criar_banco.sql) makes execution independent of installing the original project.
 
-## Modelo e grão
+## Model and grain
 
-| Tabela | Grão |
+Table names remain as implemented in the database.
+
+| Table | Grain |
 |---|---|
-| validos | Uma linha por competência e registro de origem; protocolo único no mês |
-| excluidos | Uma linha por competência e registro de origem, com motivo principal |
-| ranking | Uma linha por competência e atendente, produzida pelo ETL de origem |
-| competencias | Uma linha por mês, com execução ativa e total de entrada |
-| execucoes | Uma linha por identificador da carga confirmada |
-| etapas | Uma linha por etapa da execução |
+| `validos` | One row per reporting month and source record; ticket identifier unique within the month |
+| `excluidos` | One row per reporting month and source record, with the primary reason |
+| `ranking` | One row per reporting month and agent, produced by the source ETL |
+| `competencias` | One row per month, with the active execution and input total |
+| `execucoes` | One row per committed load identifier |
+| `etapas` | One row per execution stage |
 
-A visão geral agrega válidos e excluídos separadamente antes dos JOINs. Juntar diretamente duas tabelas de atendimentos pelo mês multiplicaria linhas e alteraria as contagens. Já o JOIN com o ranking usa competência e atendente, respeitando sua chave.
+The overview aggregates valid and excluded records separately before JOINs. Joining two interaction tables directly by month would multiply rows and distort counts. The ranking JOIN uses month and agent, respecting its key.
 
-## Resultado e validação
+## Results and validation
 
-Todas as consultas são executadas pelo SQLite. A verificação confere três reconciliações mensais e nove comparações de indicadores por atendente/mês entre SQL e os valores persistidos pelo ETL pandas.
+All queries run in SQLite. Verification checks three monthly reconciliations and nine agent/month indicator comparisons between SQL and the values persisted by the pandas ETL.
 
-Também executei dois cenários controlados dentro de savepoints: uma alteração no total de entrada, que deve reprovar a reconciliação, e a retirada do mês intermediário, que deve deixar a variação mensal seguinte ausente. Ao final, ambos são desfeitos.
+I also ran two controlled scenarios inside savepoints: changing the input total, which must fail reconciliation, and removing the intermediate month, which must leave the next monthly variation absent. Both changes are rolled back afterward.
 
-Consulte o [resumo da execução](resultados/RESUMO.md) e o [registro das verificações](resultados/VALIDACAO.json). O workflow repete a execução em Linux e Windows; o estado de cada run pode ser consultado na aba Actions do repositório.
+See the [execution summary](resultados/RESUMO.md) and [verification record](resultados/VALIDACAO.json). The workflow repeats execution on Linux and Windows; each run's status is available in the repository's Actions tab.
 
-## Interpretação da amostra
+## Interpreting the sample
 
-- Na amostra sintética, o volume válido varia de 10 para 14 e depois para 12. As variações calculadas são +40% e aproximadamente -14,29%; o primeiro mês não possui comparação anterior.
-- Mais de um contato do mesmo cliente demonstra recorrência. A base não permite concluir que houve retrabalho ou falta de resolução.
-- Cobertura de avaliação é a quantidade de avaliações válidas dividida pelos atendimentos válidos. Não é a proporção de clientes satisfeitos.
-- A posição por volume é calculada em SQL. A posição e a nota de premiação exibidas na consulta de atendentes vêm do ranking do ETL e são identificadas como tal.
-- TMA mede a duração entre início e fim dos registros; não comprova tempo ativo de trabalho.
+- In the synthetic sample, valid volume changes from 10 to 14 and then to 12. Calculated changes are +40% and approximately -14.29%; the first month has no prior comparison.
+- More than one contact from a customer demonstrates recurrence. The dataset does not establish rework or lack of resolution.
+- Rating coverage is the number of valid ratings divided by valid interactions. It is not the proportion of satisfied customers.
+- The volume rank is calculated in SQL. The award rank and score in the agent query come from the ETL ranking and are explicitly identified as such.
+- AHT (TMA) measures the duration between record start and end times; it does not establish active working time.
 
-## Escopo
+## Scope
 
-Este é um case local de SQL com dados sintéticos pequenos. Ele evidencia consultas, grão, integridade e reprodução. Não comprova experiência em BigQuery, SQL Server ou operação de banco em produção. Não foram medidos ganhos de desempenho ou produtividade.
+This is a local SQL case study using small synthetic datasets. It demonstrates queries, grain, integrity, and reproducibility. It does not establish experience with BigQuery, SQL Server, or production database operations. No performance or productivity gains were measured.
 
-É uma entrega complementar ao [case ETL](https://github.com/Pedroferreira32/pandas-support-analytics-case) e à [aplicação Performance do Suporte](https://github.com/Pedroferreira32/support-performance-analytics), com vínculo de origem documentado.
+It complements the [ETL case](https://github.com/Pedroferreira32/pandas-support-analytics-case) and the [Support Performance application](https://github.com/Pedroferreira32/support-performance-analytics), with documented provenance.
 
-## Referências de sintaxe
+## Syntax references
 
-- [CTEs no SQLite](https://www.sqlite.org/lang_with.html)
-- [Funções de janela no SQLite](https://www.sqlite.org/windowfunctions.html)
+- [SQLite CTEs](https://www.sqlite.org/lang_with.html)
+- [SQLite window functions](https://www.sqlite.org/windowfunctions.html)
